@@ -36,7 +36,7 @@ private
 
 type, public, extends(kernel_type) :: casim_kernel_type
   private
-  type(arg_type) :: meta_args(74) = (/                                      &
+  type(arg_type) :: meta_args(75) = (/                                      &
        arg_type(GH_FIELD, GH_REAL, GH_READ,  WTHETA),                       & ! mv_wth
        arg_type(GH_FIELD, GH_REAL, GH_READ,  WTHETA),                       & ! ml_wth
        arg_type(GH_FIELD, GH_REAL, GH_READ,  WTHETA),                       & ! mi_wth
@@ -54,6 +54,7 @@ type, public, extends(kernel_type) :: casim_kernel_type
        arg_type(GH_FIELD, GH_REAL, GH_READWRITE,  WTHETA),                  & ! ns_mphys
        arg_type(GH_FIELD, GH_REAL, GH_READWRITE,  WTHETA),                  & ! ng_mphys
        arg_type(GH_FIELD, GH_REAL, GH_READ,  WTHETA),                       & ! w_phys
+       arg_type(GH_FIELD, GH_REAL, GH_READ,  WTHETA),                       & ! tke_bl
        arg_type(GH_FIELD, GH_REAL, GH_READ,  WTHETA),                       & ! theta_in_wth
        arg_type(GH_FIELD, GH_REAL, GH_READ,  WTHETA),                       & ! exner_in_wth
        arg_type(GH_FIELD, GH_REAL, GH_READ,  W3),                           & ! wetrho_in_w3
@@ -146,6 +147,7 @@ contains
 !> @param[in,out] ns_mphys            CASIM snow number concentration
 !> @param[in,out] ng_mphys            CASIM graupel number concentration
 !> @param[in]     w_phys              'Vertical' wind in theta space
+!> @param[in]     tke_bl              Boundary-layer turbulent kinetic energy
 !> @param[in]     theta_in_wth        Potential temperature field
 !> @param[in]     exner_in_wth        Exner pressure in potential temperature space
 !> @param[in]     wetrho_in_w3        Wet density in density space
@@ -227,6 +229,7 @@ subroutine casim_code( nlayers,                     &
                        nl_mphys, nr_mphys,          &
                        ni_mphys, ns_mphys, ng_mphys,&
                        w_phys,                      &
+                       tke_bl,                      &
                        theta_in_wth,                &
                        exner_in_wth, wetrho_in_w3,  &
                        dry_rho_in_w3,               &
@@ -329,6 +332,7 @@ subroutine casim_code( nlayers,                     &
     real(kind=r_def), intent(in),  dimension(undf_wth) :: sigma_ml
 
     real(kind=r_def), intent(in),  dimension(undf_wth) :: w_phys
+    real(kind=r_def), intent(in),  dimension(undf_wth) :: tke_bl
     real(kind=r_def), intent(in),  dimension(undf_wth) :: theta_in_wth
     real(kind=r_def), intent(in),  dimension(undf_wth) :: exner_in_wth
     real(kind=r_def), intent(in),  dimension(undf_wth) :: height_wth
@@ -643,7 +647,7 @@ subroutine casim_code( nlayers,                     &
       dz_casim(k,1,1)  = deltaz(1,1,k)
       rho_casim(k,1,1) = rhodz_dry(1,1,k) / dz_casim(k,1,1)
       w_casim(k,1,1) = w_phys(map_wth(1) + k)
-      tke_casim(k,1,1) = 0.1_wp
+      tke_casim(k,1,1) = real(tke_bl(map_wth(1) + k), wp)
       cfliq_casim(k,1,1) = cfl_wth(map_wth(1) + k)
       cfsnow_casim(k,1,1) = cff_wth(map_wth(1) + k)
       cfice_casim(k,1,1) = cfsnow_casim(k,1,1)

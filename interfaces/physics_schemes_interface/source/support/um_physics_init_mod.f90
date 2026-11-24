@@ -1494,7 +1494,7 @@ contains
         graupel_option = 2_i_um
         l_mcr_qcf2 = .true.
         l_mcr_qgraup = .true.
-        wvarfac = 1.0_r_um
+        wvarfac = 2.0_r_um
         l_inhom_rain = casim_inhom_rain
 
         ! Transport all prognostic variables (include graupel and snow)

@@ -90,7 +90,7 @@ contains
     ! Fields needed by the mechanistic activation
     type( field_type ), pointer :: cf_liq_pre_fast
     type( field_type ), pointer :: w_in_wth
-    type( field_type ), pointer :: wvar
+    type( field_type ), pointer :: tke_bl
 
     ! GLOMAP modal aerosol
     type( field_type ), pointer :: n_ait_sol
@@ -150,7 +150,7 @@ contains
       call derived_fields%get_field('exner_in_wth', exner_wth)
       call derived_fields%get_field('rho_in_wth', rho_wth)
       call derived_fields%get_field('w_in_wth', w_in_wth)
-      call turbulence_fields%get_field('wvar', wvar)
+      call turbulence_fields%get_field('tke_bl', tke_bl)
 
       call aerosol_fields%get_field('n_ait_sol', n_ait_sol)
       call aerosol_fields%get_field('ait_sol_su', ait_sol_su)
@@ -177,7 +177,7 @@ contains
       call invoke( casim_arg_act_kernel_type( mr(imr_cl), m_cl_pre_fast,       &
                                               rho_wth, theta, exner_wth,       &
                                               cf_liq, cf_liq_pre_fast,         &
-                                              w_in_wth, wvar,                  &
+                                              w_in_wth, tke_bl,                &
                                               nl_mphys,                        &
                                               n_ait_sol, ait_sol_su,           &
                                               ait_sol_bc, ait_sol_om,          &

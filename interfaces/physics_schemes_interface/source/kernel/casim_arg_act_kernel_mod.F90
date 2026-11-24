@@ -39,7 +39,7 @@ type, public, extends(kernel_type) :: casim_arg_act_kernel_type
        arg_type(GH_FIELD, GH_REAL, GH_READ,      WTHETA),                   & ! cf_liq
        arg_type(GH_FIELD, GH_REAL, GH_READ,      WTHETA),                   & ! cf_liq_pre_fast
        arg_type(GH_FIELD, GH_REAL, GH_READ,      WTHETA),                   & ! w_in_wth
-       arg_type(GH_FIELD, GH_REAL, GH_READ,      WTHETA),                   & ! wvar
+       arg_type(GH_FIELD, GH_REAL, GH_READ,      WTHETA),                   & ! tke_bl
        arg_type(GH_FIELD, GH_REAL, GH_READWRITE, WTHETA),                   & ! nl_mphys
        arg_type(GH_FIELD, GH_REAL, GH_READ,      WTHETA),                   & ! n_ait_sol
        arg_type(GH_FIELD, GH_REAL, GH_READ,      WTHETA),                   & ! ait_sol_su
@@ -89,7 +89,7 @@ contains
 !> @param[in]     cf_liq_pre_fast  Liquid cloud fraction as it was on entry to
 !!                                  the fast physics
 !> @param[in]     w_in_wth         'Vertical' wind in theta space
-!> @param[in]     wvar             Vertical velocity variance
+!> @param[in]     tke_bl           Boundary-layer turbulent kinetic energy
 !> @param[in,out] nl_mphys         CASIM cloud-droplet number concentration
 !> @param[in]     n_ait_sol        Soluble Aitken mode number mixing ratio
 !> @param[in]     ait_sol_su       Soluble Aitken mode H2SO4 mass mixing ratio
@@ -123,7 +123,7 @@ subroutine casim_arg_act_code( nlayers,                            &
                                m_cl, m_cl_pre_fast,                &
                                rho_in_wth, theta, exner_in_wth,    &
                                cf_liq, cf_liq_pre_fast,            &
-                               w_in_wth, wvar,                     &
+                               w_in_wth, tke_bl,                   &
                                nl_mphys,                           &
                                n_ait_sol, ait_sol_su,              &
                                ait_sol_bc, ait_sol_om,             &
@@ -166,7 +166,7 @@ subroutine casim_arg_act_code( nlayers,                            &
     real(kind=r_def), intent(in),  dimension(undf_wth) :: cf_liq
     real(kind=r_def), intent(in),  dimension(undf_wth) :: cf_liq_pre_fast
     real(kind=r_def), intent(in),  dimension(undf_wth) :: w_in_wth
-    real(kind=r_def), intent(in),  dimension(undf_wth) :: wvar
+    real(kind=r_def), intent(in),  dimension(undf_wth) :: tke_bl
 
     real(kind=r_def), intent(inout), dimension(undf_wth) :: nl_mphys
 
@@ -241,9 +241,9 @@ subroutine casim_arg_act_code( nlayers,                            &
       cloudnumber_col(k)       = nl_mphys(map_wth(1) + k)
 
       ! Activating vertical velocity, following the UM
-      if ( wvar(map_wth(1) + k) > eps ) then
+      if ( tke_bl(map_wth(1) + k) > eps ) then
         w_tke(k) = w_in_wth(map_wth(1) + k) +                                  &
-                   wvarfac * sqrt( wvar(map_wth(1) + k) )
+                   wvarfac * sqrt( tke_bl(map_wth(1) + k) )
       else
         w_tke(k) = w_in_wth(map_wth(1) + k)
       end if

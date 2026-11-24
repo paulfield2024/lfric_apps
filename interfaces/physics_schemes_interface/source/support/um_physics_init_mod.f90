@@ -1505,7 +1505,7 @@ contains
         casim_aerosol_option = 0_i_um   ! no soluble or insoluble aerosol modes
         casim_aerosol_process_level = 0_i_um
         casim_aerosol_couple_choice = 0_i_um
-        l_ukca_aerosol = .false.
+        l_ukca_aerosol = .true.
 
         select case (casim_activation)
 
